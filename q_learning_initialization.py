@@ -66,7 +66,7 @@ plt.plot(averaged_reward)
 plt.show()
 
 #%% --------------- evaluate the performance
-trained_Q_table = np.load("Q_value_table.npy")
+trained_Q_table = np.load("models/Q_value_table.npy")
 
 test_eposide = 20
 
