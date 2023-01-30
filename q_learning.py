@@ -7,6 +7,7 @@ from until.until import reward_table
 EP_LEN = 50
 EP_NUM = 100000
 
+
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--exploration_proba', type=float, default=0.1)
@@ -17,7 +18,7 @@ def parse_args():
     return args
 
 
-if __name__ == "main":
+if __name__ == "__main__":
     args = parse_args()
 
     env = ArmEnv(ep_len=EP_LEN)
@@ -30,7 +31,7 @@ if __name__ == "main":
         print("The shape of Q_table is:", Q_table.shape)
         reward_episode = list()
     else:
-        Q_table = np.zeros((obs_dim[0], obs_dim[1], action_dim))
+        Q_table = np.zeros((obs_dim + [action_dim]))
         print("The shape of Q_table is:", Q_table.shape)
 
     exploration_proba = args.exploration_proba
@@ -39,7 +40,7 @@ if __name__ == "main":
 
     reward_episode = list()
 
-    #%% update Q_table
+    # %% update Q_table
     for eposide in range(EP_NUM):
         current_state = env.reset()
         done = False
@@ -55,29 +56,32 @@ if __name__ == "main":
             episode_reward += reward
 
             # update Q table:
-            Q_table[current_state[0], current_state[1], action] = (1 - lr) * Q_table[current_state[0], current_state[1], action] + \
-                                                               lr * (reward + gamma * max(Q_table[next_state[0], next_state[1], :]))
+            Q_table[current_state[0], current_state[1], action] = (1 - lr) * Q_table[
+                current_state[0], current_state[1], action] + \
+                                                                  lr * (reward + gamma * max(
+                Q_table[next_state[0], next_state[1], :]))
             if done:
                 break
 
             current_state = next_state
 
         reward_episode.append(episode_reward)
+        print("epoch %d" % eposide)
 
-    #%% ----------------- save the Q table
+    # %% ----------------- save the Q table
     np.save("./models/Q_value_no_table", Q_table)
     np.save("./results/reward_episode", reward_episode)
 
     # average every 500 step
     averaged_reward = list()
     for i in range(len(reward_episode)):
-        if (i+1) % 500 == 0:
-            average = np.mean(reward_episode[i-499:i+1])
+        if (i + 1) % 500 == 0:
+            average = np.mean(reward_episode[i - 499:i + 1])
             averaged_reward.append(average)
     plt.plot(averaged_reward)
     plt.show()
 
-    #%% --------------- evaluate the performance
+    # --------------- evaluate the performance--------
     trained_Q_table = np.load("models/Q_value_no_table.npy")
 
     test_eposide = 20
@@ -85,9 +89,7 @@ if __name__ == "main":
     for i in range(test_eposide):
         obs = env.reset()
         for step in range(EP_LEN):
-
             act = np.argmax(Q_table[obs[0], obs[1], :])
             obs, _, done = env.step(act)
             print(obs)
             env.render()
-
