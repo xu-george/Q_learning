@@ -16,6 +16,7 @@ def parse_args():
     args = parser.parse_args()
     return args
 
+
 if __name__ == "main":
     args = parse_args()
 
@@ -60,13 +61,12 @@ if __name__ == "main":
                 break
 
             current_state = next_state
-            #exploration_proba = max(min_exploration_proba, np.exp(-exploration_decay * i))
 
         reward_episode.append(episode_reward)
 
     #%% ----------------- save the Q table
     np.save("./models/Q_value_no_table", Q_table)
-    np.save("reward_episode", reward_episode)
+    np.save("./results/reward_episode", reward_episode)
 
     # average every 500 step
     averaged_reward = list()
