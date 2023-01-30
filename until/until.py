@@ -15,7 +15,7 @@ class ReplayMemory:
         self.capacity = capacity
         self.buffer = []
         self.position = 0
-        self.start_idx = [0]
+        self.start_idx = [0]   # start index of the trajectory
 
     def push(self, state, action, reward, next_state, done):
         assert len(self.buffer) < self.capacity
@@ -43,7 +43,7 @@ class ReplayMemory:
             os.makedirs('checkpoints/')
 
         if save_path is None:
-            save_path = "checkpoints/sac_buffer_{}_{}".format(env_name, suffix)
+            save_path = "checkpoints/buffer_{}_{}".format(env_name, suffix)
         print('Saving buffer to {}'.format(save_path))
 
         with open(save_path, 'wb') as f:
