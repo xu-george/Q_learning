@@ -1,5 +1,4 @@
 import numpy as np
-
 import random
 import numpy as np
 import os
@@ -19,6 +18,7 @@ class ReplayMemory:
 
     def push(self, state, action, reward, next_state, done):
         assert len(self.buffer) < self.capacity
+        self.position = len(self.buffer)
         self.buffer.append(None)
         self.buffer[self.position] = (state, action, reward, next_state, done)
 
@@ -47,13 +47,13 @@ class ReplayMemory:
         print('Saving buffer to {}'.format(save_path))
 
         with open(save_path, 'wb') as f:
-            pickle.dump(self.buffer, f)
+            pickle.dump([self.buffer, self.start_idx], f)
 
     def load_buffer(self, save_path):
         print('Loading buffer from {}'.format(save_path))
 
         with open(save_path, "rb") as f:
-            self.buffer = pickle.load(f)
+            self.buffer, self.start_idx = pickle.load(f)
             self.position = len(self.buffer) % self.capacity
 
 

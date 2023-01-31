@@ -46,7 +46,7 @@ if __name__ == "__main__":
         done = False
         episode_reward = 0
 
-        for i in range(EP_LEN):
+        while not done:
             if np.random.uniform(0, 1) < exploration_proba:
                 action = env.sample_action()
             else:
@@ -56,12 +56,9 @@ if __name__ == "__main__":
             episode_reward += reward
 
             # update Q table:
-            Q_table[current_state[0], current_state[1], action] = (1 - lr) * Q_table[
-                current_state[0], current_state[1], action] + \
-                                                                  lr * (reward + gamma * max(
-                Q_table[next_state[0], next_state[1], :]))
-            if done:
-                break
+            Q_table[current_state[0], current_state[1], action] = (1 - lr) * \
+                Q_table[current_state[0], current_state[1], action] + \
+                lr * (reward + gamma * max(Q_table[next_state[0], next_state[1], :]))
 
             current_state = next_state
 
@@ -69,7 +66,7 @@ if __name__ == "__main__":
         print("epoch %d" % eposide)
 
     # %% ----------------- save the Q table
-    np.save("./models/Q_value_no_table", Q_table)
+    np.save("./checkpoints/Q_value_table", Q_table)
     np.save("./results/reward_episode", reward_episode)
 
     # average every 500 step
@@ -82,13 +79,14 @@ if __name__ == "__main__":
     plt.show()
 
     # --------------- evaluate the performance--------
-    trained_Q_table = np.load("models/Q_value_no_table.npy")
+    trained_Q_table = np.load("checkpoints/Q_value_table.npy")
 
     test_eposide = 20
 
     for i in range(test_eposide):
         obs = env.reset()
-        for step in range(EP_LEN):
+        done = False
+        while not done:
             act = np.argmax(Q_table[obs[0], obs[1], :])
             obs, _, done = env.step(act)
             print(obs)
