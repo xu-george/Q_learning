@@ -8,7 +8,7 @@ BufferLen = EP_LEN * EP_NUM
 seed = 112
 
 if __name__ == '__main__':
-    save_buffer = True
+    save_buffer = False
     env = ArmEnv(ep_len=EP_LEN)
 
     buffer = ReplayMemory(seed=seed, capacity=BufferLen)
@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
             obs = next_obs
             print(obs, done)
-            # env.render()
+            env.render()
 
         # update begin index
         if save_buffer:

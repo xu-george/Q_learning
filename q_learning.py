@@ -13,14 +13,13 @@ def parse_args():
     parser.add_argument('--exploration_proba', type=float, default=0.1)
     parser.add_argument('--gamma', type=float, default=0.99)
     parser.add_argument('--lr', type=float, default=0.1)
-    parser.add_argument('--initial', type=bool, default=False)
+    parser.add_argument('--initial', type=bool, default=True)
     args = parser.parse_args()
     return args
 
 
 if __name__ == "__main__":
     args = parse_args()
-
     env = ArmEnv(ep_len=EP_LEN)
     obs_dim = env.observation_space
     action_dim = env.action_dim
@@ -65,8 +64,8 @@ if __name__ == "__main__":
         reward_episode.append(episode_reward)
         print("epoch %d" % eposide)
 
-    # %% ----------------- save the Q table
-    np.save("./checkpoints/Q_value_table", Q_table)
+    # %% ----------------- save the Q table -------------
+    np.save("./checkpoints/Q_value_initial_table", Q_table)
     np.save("./results/reward_episode", reward_episode)
 
     # average every 500 step
@@ -79,7 +78,7 @@ if __name__ == "__main__":
     plt.show()
 
     # --------------- evaluate the performance--------
-    trained_Q_table = np.load("checkpoints/Q_value_table.npy")
+    trained_Q_table = np.load("checkpoints/Q_value_initial_table.npy")
 
     test_eposide = 20
 

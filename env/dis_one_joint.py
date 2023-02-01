@@ -100,8 +100,8 @@ class ArmEnv(object):
         self.touched = False
         r = - distance/240
         # with early stop
-        if (1-distance/240) > 0.9: # touched
-            r += 10
+        if (1-distance/240) > 0.89: # touched
+            r += 20
             self.touched = True
         return r
 
