@@ -1,20 +1,20 @@
 import numpy as np
 from env.dis_one_joint import ArmEnv
-from until.until import ReplayMemory
+from utils.util import ReplayMemory
 
 EP_LEN = 50
-EP_NUM = 100
+EP_NUM = 50
 BufferLen = EP_LEN * EP_NUM
 seed = 112
 
 if __name__ == '__main__':
-    save_buffer = False
+    save_buffer = True
     env = ArmEnv(ep_len=EP_LEN)
 
     buffer = ReplayMemory(seed=seed, capacity=BufferLen)
 
     # load a well-trained agent
-    Q_table = np.load("checkpoints/Q_value_table.npy")
+    Q_table = np.load("checkpoints/Q_value_initial_table.npy")
 
     # show random action
     for i in range(EP_NUM):
@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
             obs = next_obs
             print(obs, done)
-            env.render()
+            # env.render()
 
         # update begin index
         if save_buffer:
@@ -45,4 +45,4 @@ if __name__ == '__main__':
         new_buffer.load_buffer("checkpoints/buffer_one_joint_")
 
         print("the length of buffer %d" % len(new_buffer.buffer))
-        print("the length of trajectory %d" % (len(new_buffer.start_idx) -1) )
+        print("the length of trajectory %d" % (len(new_buffer.start_idx)-1))

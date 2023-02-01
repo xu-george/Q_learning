@@ -2,7 +2,7 @@ import numpy as np
 import argparse
 from env.dis_one_joint import ArmEnv
 from matplotlib import pyplot as plt
-from until.until import reward_table
+from utils.util import reward_table
 
 EP_LEN = 50
 EP_NUM = 100000
@@ -11,9 +11,9 @@ EP_NUM = 100000
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--exploration_proba', type=float, default=0.1)
-    parser.add_argument('--gamma', type=float, default=0.99)
+    parser.add_argument('--gamma', type=float, default=0.9)
     parser.add_argument('--lr', type=float, default=0.1)
-    parser.add_argument('--initial', type=bool, default=True)
+    parser.add_argument('--initial', type=bool, default=False)
     args = parser.parse_args()
     return args
 
@@ -65,7 +65,7 @@ if __name__ == "__main__":
         print("epoch %d" % eposide)
 
     # %% ----------------- save the Q table -------------
-    np.save("./checkpoints/Q_value_initial_table", Q_table)
+    np.save("./checkpoints/Q_value_table", Q_table)
     np.save("./results/reward_episode", reward_episode)
 
     # average every 500 step
@@ -75,10 +75,12 @@ if __name__ == "__main__":
             average = np.mean(reward_episode[i - 499:i + 1])
             averaged_reward.append(average)
     plt.plot(averaged_reward)
+    plt.xlabel('episode')
+    plt.ylabel('reward')
     plt.show()
 
     # --------------- evaluate the performance--------
-    trained_Q_table = np.load("checkpoints/Q_value_initial_table.npy")
+    trained_Q_table = np.load("checkpoints/Q_value_table.npy")
 
     test_eposide = 20
 

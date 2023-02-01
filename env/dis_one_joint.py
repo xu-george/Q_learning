@@ -14,8 +14,8 @@ import time
 
 
 class ArmEnv(object):
-    action_type = [-1, 0, 1]
-    action_dim = 3
+    action_type = [-1, 1]
+    action_dim = len(action_type)
     space_length = 50
     observation_space = [space_length, space_length]  # discret 2*pi into 50 pieces
     d_s = 2*np.pi/space_length
@@ -62,12 +62,14 @@ class ArmEnv(object):
             self.done = False
         return s, r, self.done
 
-    def reset(self):
+    def reset(self, state=None):
         self.done = False
         self.ep_step = 0
-
-        # random the point position
-        arm1rad, self.point_info[1] = np.random.randint(50, size=2) * self.d_s
+        if state is None:
+            # random the point position
+            arm1rad, self.point_info[1] = np.random.randint(50, size=2) * self.d_s
+        else:
+            arm1rad, self.point_info[1] = state * self.d_s
         self.point_info[2:4] = self.center_coord + np.array([self.point_track * np.cos(self.point_info[1]),
                                                              self.point_track * np.sin(self.point_info[1])])
 
@@ -100,8 +102,8 @@ class ArmEnv(object):
         self.touched = False
         r = - distance/240
         # with early stop
-        if (1-distance/240) > 0.89: # touched
-            r += 20
+        if (1-distance/240) > 0.9: # touched
+            r += 1
             self.touched = True
         return r
 
