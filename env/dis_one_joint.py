@@ -26,7 +26,7 @@ class ArmEnv(object):
     point_r = 10
     point_track = 130
 
-    def __init__(self, ep_len=50):
+    def __init__(self, ep_len=50, scale=False):
         # node1 (l, d_rad, x, y),
         self.ep_len = ep_len
         self.ep_step = 0
@@ -37,6 +37,8 @@ class ArmEnv(object):
         self.point_info = np.zeros(4)
         self.point_info[0] = self.point_track
         self.center_coord = np.array(self.viewer_xy)/2
+        # if normalize observation
+        self.scale = scale
 
     def step(self, action_num):
         self.ep_step += 1
@@ -60,7 +62,9 @@ class ArmEnv(object):
             self.done = True
         else:
             self.done = False
-        return s, r, self.done
+
+        # if touched the game stop early
+        return s, r, self.done, self.touched
 
     def reset(self, state=None):
         self.done = False
@@ -96,7 +100,10 @@ class ArmEnv(object):
         arm_angle = int(self.arm_info[1]/self.d_s)
         point_angle = int(self.point_info[1]//self.d_s)
         distance = np.linalg.norm(self.point_info[2:4] - self.arm_info[2:4])
-        return np.hstack([arm_angle, point_angle]), distance
+        if self.scale:
+            return np.hstack([arm_angle/self.space_length, point_angle/self.space_length]), distance
+        else:
+            return np.hstack([arm_angle, point_angle]), distance
 
     def _r_func(self, distance):
         self.touched = False

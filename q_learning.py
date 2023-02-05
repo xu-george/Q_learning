@@ -51,7 +51,7 @@ if __name__ == "__main__":
             else:
                 action = np.argmax(Q_table[current_state[0], current_state[1], :])
 
-            next_state, reward, done = env.step(action)
+            next_state, reward, done, _ = env.step(action)
             episode_reward += reward
 
             # update Q table:
@@ -89,6 +89,6 @@ if __name__ == "__main__":
         done = False
         while not done:
             act = np.argmax(Q_table[obs[0], obs[1], :])
-            obs, _, done = env.step(act)
+            obs, _, done, _ = env.step(act)
             print(obs)
             env.render()

@@ -9,7 +9,7 @@ class ReplayMemory:
     """
     a simple replay buffer, suppose the buffer size is big enough to contain all the experiment
     """
-    def __init__(self, seed, capacity=1e6):
+    def __init__(self, seed=0, capacity=1e6):
         random.seed(seed)
         self.capacity = capacity
         self.buffer = []
@@ -72,5 +72,4 @@ def reward_table(env):
                 table[i][j][k] = env.get_instant_reward([i, j], k)
 
     return table
-
 

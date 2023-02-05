@@ -23,7 +23,7 @@ if __name__ == '__main__':
 
         while not done:
             act = np.argmax(Q_table[obs[0], obs[1], :])
-            next_obs, reward, done = env.step(act)
+            next_obs, reward, done, _ = env.step(act)
 
             # save MDP chain to replay buffer--state, action, reward, next_state, done
             if save_buffer:
@@ -39,10 +39,10 @@ if __name__ == '__main__':
 
     # save replay buffer
     if save_buffer:
-        buffer.save_buffer("one_joint")
+        buffer.save_buffer(f"one_joint_{EP_NUM}")
         # check the load of replay buffer
         new_buffer = ReplayMemory(seed=seed, capacity=BufferLen)
-        new_buffer.load_buffer("checkpoints/buffer_one_joint_")
+        new_buffer.load_buffer(f"checkpoints/buffer_one_joint_{EP_NUM}_")
 
         print("the length of buffer %d" % len(new_buffer.buffer))
         print("the length of trajectory %d" % (len(new_buffer.start_idx)-1))
